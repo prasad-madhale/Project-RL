@@ -5,6 +5,7 @@ Created on Wed Sep 12 12:24:07 2018
 
 @author: prasad
 """
+import random
 
 # Simple game of Tic-Tac-Toe built for Reinforcement Learning applications
 
@@ -44,6 +45,7 @@ def game(board):
     print("TIC TAC TOE\n")
     printBoard(board)
     player = "X"
+    done = False
     while not boardFull(board):
         oldplayer = player
         player = playerMove(player, board)
@@ -51,9 +53,20 @@ def game(board):
         
         if checkWinner(board, oldplayer): 
             print("%s won this match!"%oldplayer)
+            done = True
             break
         
-    if boardFull(board):
+        oldplayer = player
+        player = compMove(player, board)
+        print("\nAI's move\n")
+        printBoard(board) 
+        
+        if checkWinner(board, oldplayer): 
+            print("%s won this match!"%oldplayer)
+            done = True
+            break        
+        
+    if boardFull(board) and not done:
         printBoard(board)
         print("Match ended in a draw!")
 
@@ -84,6 +97,29 @@ def playerMove(player, board):
             
     return player
    
+    
+def compMove(player, board):
+    run = True
+    
+    while run:
+        choice = random.randint(0,8)
+        
+        try:
+            if not checkChoice(choice, board):
+                raise Exception("Number out of range")
+        except:
+            print("Please enter a valid number between 0 and 8")
+            continue
+        
+        if spaceFree(choice, board):
+            insertBoard(choice, player, board)
+            player = turnDecider(player)
+            run = False
+        else:
+            print("Slot is full choose another slot")
+            
+    return player
+    
     
 # Returns True if the given position is within the board size(0 to 8)
 # Else returns False
