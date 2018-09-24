@@ -26,7 +26,8 @@ class TicTacToe:
         print("%s | %s | %s"%(board[3],board[4],board[5]))
         print("_________")
         print("%s | %s | %s"%(board[6],board[7],board[8]))
-        
+
+
         
     # Inserts the player's piece into the given position in the board
     # GIVEN: pos - position on the board where the piece is to be inserted
@@ -106,6 +107,7 @@ class TicTacToe:
         run = True
         
         while run:
+            # Call the RL class to predict the move
             choice = random.randint(0,8)
             
             try:
@@ -155,22 +157,41 @@ class TicTacToe:
     # Else returns False
     # GIVEN: board - the board on which current game is being played
     #        player - piece of the player whose turn it is to play 
-            
-    ## NEEDS to be improved later on 
-    def checkWinner(self, b, player):
-        return ((b[0] == player and b[1] == player and b[2] == player) or
-                (b[3] == player and b[4] == player and b[5] == player) or
-                (b[6] == player and b[7] == player and b[8] == player) or
-                (b[0] == player and b[3] == player and b[6] == player) or
-                (b[1] == player and b[4] == player and b[7] == player) or
-                (b[2] == player and b[5] == player and b[8] == player) or
-                (b[0] == player and b[4] == player and b[8] == player) or
-                (b[2] == player and b[4] == player and b[6] == player))
-        
+
+    def checkWinner(self, board, player):
+
+        combos = [(0,1,2), (3,4,5), (6,7,8), (0,3,6), (1,4,7), (2,5,8), (0,4,8), (2,4,6)]
+
+        for line in combos:
+            lineState = board[line[0]] + board[line[1]] + board[line[2]]
+
+            if lineState == "XXX" or lineState == "OOO":
+                return True
+
+        return False
+
+
+    def getState(self, board):
+        boardState = ""
+
+        for chars in board:
+            boardState += chars
+
+        return boardState
+
+
+    def nextState(self,board,pos,player):
+        board2 = board.copy()
+        board2[pos] = player
+        result = self.getState(board2)
+        return result
+
+
 def main():
     tic = TicTacToe()
     tic.game(tic.board)
-    
+
+
 if __name__ == '__main__':
     main()
     
